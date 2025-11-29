@@ -3,17 +3,17 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
+
 import {
   CreateUserDto,
   UpdatePasswordDto,
-  User,
 } from 'src/interfaces/user.interface';
+
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -27,11 +27,7 @@ export class UserController {
 
   @Get(':id')
   getUserById(@Param('id', ParseUUIDPipe) id: string) {
-    const user: Promise<User | undefined> = this.userService.getById(id);
-    if (user === undefined) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+    return this.userService.getById(id);
   }
 
   @Post()

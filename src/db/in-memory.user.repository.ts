@@ -6,7 +6,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { IUserRepository } from './user.repository.interface';
-import { hashPassword } from 'src/crypto/hashPassword';
+import { comparePassword, hashPassword } from 'src/crypto/hashPassword';
 
 @Injectable()
 export class InMemoryUserRepository implements IUserRepository {
@@ -40,6 +40,9 @@ export class InMemoryUserRepository implements IUserRepository {
       console.warn('newPassword and oldPassword are the same');
       return undefined;
     }
+    if (!comparePassword(data.oldPassword, user.password)) {
+      return undefined;
+    }
     const updated: User = {
       id: user.id,
       login: user.login,
@@ -53,6 +56,8 @@ export class InMemoryUserRepository implements IUserRepository {
   }
 
   async delete(id: string): Promise<boolean> {
+    const user: User | undefined = await this.getById(id);
+    if (user === undefined) return false;
     return this.store.delete(id);
   }
 }
