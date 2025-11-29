@@ -1,5 +1,19 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
-import { CreateUserDto, UpdatePasswordDto, User } from 'src/interfaces/user.interface';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
+import {
+  CreateUserDto,
+  UpdatePasswordDto,
+  User,
+} from 'src/interfaces/user.interface';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -12,7 +26,7 @@ export class UserController {
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string) {
+  getUserById(@Param('id', ParseUUIDPipe) id: string) {
     const user: Promise<User | undefined> = this.userService.getById(id);
     if (user === undefined) {
       throw new NotFoundException('User not found');
@@ -25,13 +39,16 @@ export class UserController {
     return this.userService.create(body);
   }
 
-  @Put()
-  updatePassword(@Param('id') id: string, @Body() body: UpdatePasswordDto) {
+  @Put(':id')
+  updatePassword(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() body: UpdatePasswordDto,
+  ) {
     return this.userService.update(id, body);
   }
 
-  @Delete()
-  deleteUser(@Param('id') id: string) {
+  @Delete(':id')
+  deleteUser(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.delete(id);
   }
 }
