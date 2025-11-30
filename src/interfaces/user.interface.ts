@@ -1,5 +1,13 @@
 import { Exclude } from 'class-transformer';
-import { IsInt, IsNotEmpty, IsString, IsUUID, Min } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  IsUUID,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export interface User {
   id: string;
@@ -13,7 +21,10 @@ export interface User {
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
+  @MinLength(3)
+  @MaxLength(255)
   login: string;
+
   @IsNotEmpty()
   @IsString()
   password: string;
@@ -23,13 +34,15 @@ export class UpdatePasswordDto {
   @IsNotEmpty()
   @IsString()
   oldPassword: string;
+
   @IsNotEmpty()
   @IsString()
   newPassword: string;
 }
 
-export class ResUserData {
+export class UserResponse {
   @IsUUID()
+  @IsNotEmpty()
   id: string;
 
   @IsNotEmpty()
