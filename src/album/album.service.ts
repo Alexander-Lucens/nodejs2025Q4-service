@@ -45,10 +45,10 @@ export class AlbumService {
   }
 
   async delete(id: string) {
-    await this.favsRepository.deleteAlbum(id);
     const respons = await this.repository.delete(id);
     if (!respons) {
       throw new NotFoundException('Album not found');
     }
+    await this.favsRepository.deleteAlbum(id);
   }
 }
