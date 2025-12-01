@@ -1,4 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { IFavoriteRepository } from 'src/db/favorite/favorite.repository.interface';
 import { ITrackRepository } from 'src/db/track/track.repository.interface';
 import {
   CreateTrackDto,
@@ -9,6 +10,7 @@ import {
 @Injectable()
 export class TrackService {
   constructor(
+    @Inject('FAVS_REPOSITORY') private favsRepository: IFavoriteRepository,
     @Inject('TRACK_REPOSITORY') private repository: ITrackRepository,
   ) {}
 
@@ -43,6 +45,7 @@ export class TrackService {
   }
 
   async delete(id: string) {
+    await this.favsRepository.deleteTrack(id);
     const respons = await this.repository.delete(id);
     if (!respons) {
       throw new NotFoundException('Track not found');

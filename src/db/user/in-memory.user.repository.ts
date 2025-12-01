@@ -39,7 +39,7 @@ export class InMemoryUserRepository implements IUserRepository {
     const updated: User = {
       id: user.id,
       login: user.login,
-      version: user.version++,
+      version: user.version + 1,
       password: await hashPassword(data.newPassword),
       createdAt: user.createdAt,
       updatedAt: Date.now(),

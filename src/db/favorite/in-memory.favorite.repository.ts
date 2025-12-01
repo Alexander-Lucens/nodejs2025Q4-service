@@ -1,10 +1,10 @@
-import { Favorites, FavoritesDto } from 'src/interfaces/favs.interface';
+import { Favorites } from 'src/interfaces/favs.interface';
 import { Injectable } from '@nestjs/common';
 import { IFavoriteRepository } from './favorite.repository.interface';
 
 @Injectable()
 export class InMemoryFavoriteRepository implements IFavoriteRepository {
-  private readonly store: FavoritesDto = {
+  private readonly store: Favorites = {
     tracks: [],
     albums: [],
     artists: [],

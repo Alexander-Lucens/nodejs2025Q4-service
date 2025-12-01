@@ -1,5 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IArtistRepository } from 'src/db/artist/artist.repository.interface';
+import { IFavoriteRepository } from 'src/db/favorite/favorite.repository.interface';
 import {
   CreateArtistDto,
   Artist,
@@ -9,6 +10,7 @@ import {
 @Injectable()
 export class ArtistService {
   constructor(
+    @Inject('FAVS_REPOSITORY') private favsRepository: IFavoriteRepository,
     @Inject('ARTIST_REPOSITORY') private repository: IArtistRepository,
   ) {}
 
@@ -43,6 +45,7 @@ export class ArtistService {
   }
 
   async delete(id: string) {
+    await this.favsRepository.deleteArtist(id);
     const respons = await this.repository.delete(id);
     if (!respons) {
       throw new NotFoundException('Artist not found');

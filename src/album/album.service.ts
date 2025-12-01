@@ -1,5 +1,6 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IAlbumRepository } from 'src/db/album/album.repository.interface';
+import { IFavoriteRepository } from 'src/db/favorite/favorite.repository.interface';
 import {
   CreateAlbumDto,
   Album,
@@ -9,6 +10,7 @@ import {
 @Injectable()
 export class AlbumService {
   constructor(
+    @Inject('FAVS_REPOSITORY') private favsRepository: IFavoriteRepository,
     @Inject('ALBUM_REPOSITORY') private repository: IAlbumRepository,
   ) {}
 
@@ -43,6 +45,7 @@ export class AlbumService {
   }
 
   async delete(id: string) {
+    await this.favsRepository.deleteAlbum(id);
     const respons = await this.repository.delete(id);
     if (!respons) {
       throw new NotFoundException('Album not found');
