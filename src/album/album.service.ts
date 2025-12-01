@@ -1,6 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IAlbumRepository } from 'src/db/album/album.repository.interface';
 import { IFavoriteRepository } from 'src/db/favorite/favorite.repository.interface';
+import { ITrackRepository } from 'src/db/track/track.repository.interface';
 import {
   CreateAlbumDto,
   Album,
@@ -12,6 +13,7 @@ export class AlbumService {
   constructor(
     @Inject('FAVS_REPOSITORY') private favsRepository: IFavoriteRepository,
     @Inject('ALBUM_REPOSITORY') private repository: IAlbumRepository,
+    @Inject('TRACK_REPOSITORY') private trackRepository: ITrackRepository,
   ) {}
 
   async getAll() {
@@ -45,10 +47,20 @@ export class AlbumService {
   }
 
   async delete(id: string) {
-    const respons = await this.repository.delete(id);
-    if (!respons) {
+    const album = await this.repository.getById(id);
+    if (!album) {
       throw new NotFoundException('Album not found');
     }
     await this.favsRepository.deleteAlbum(id);
+    const tracks = await this.trackRepository.getAll();
+    for (const track of tracks) {
+      if (track.albumId === id) {
+        await this.trackRepository.update(track.id, {
+          ...track,
+          albumId: null,
+        });
+      }
+    }
+    await this.repository.delete(id);
   }
 }

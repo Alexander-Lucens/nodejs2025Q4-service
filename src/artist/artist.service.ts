@@ -7,7 +7,7 @@ import {
   CreateArtistDto,
   Artist,
   UpdateArtistDto,
-} from 'src/interfaces/Artist.interface';
+} from 'src/interfaces/artist.interface';
 
 @Injectable()
 export class ArtistService {
