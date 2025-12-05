@@ -1,7 +1,12 @@
 {
   "moduleFileExtensions": ["ts", "js"],
   "rootDir": "test",
+  "preset": "ts-jest",
   "testEnvironment": "node",
+  "setupFiles": ["<rootDir>/../jest.setup.ts"],
+  "moduleNameMapper": {
+    "^jsonwebtoken$": "<rootDir>/../jest-mocks/jsonwebtoken.js"
+  },
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   }
