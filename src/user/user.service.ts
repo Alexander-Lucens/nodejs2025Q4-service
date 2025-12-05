@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { comparePassword } from 'src/crypto/hashPassword';
+import { comparePassword, hashPassword } from 'src/crypto/hashPassword';
 import { IUserRepository } from 'src/db/user/user.repository.interface';
 import {
   CreateUserDto,
@@ -32,7 +32,11 @@ export class UserService {
   }
 
   async create(data: CreateUserDto) {
-    const user: User = await this.repository.create(data);
+    const passwordHash = await hashPassword(data.password);
+    const user: User = await this.repository.create({
+      ...data,
+      password: passwordHash,
+    });
     return plainToInstance(UserResponse, user);
   }
 
@@ -44,6 +48,8 @@ export class UserService {
     if (!(await comparePassword(data.oldPassword, user.password))) {
       throw new ForbiddenException('Old password is wrong');
     }
+    const newPassword: string = await hashPassword(data.newPassword);
+    data = { ...data, newPassword: newPassword };
     const uUser: User | undefined = await this.repository.update(id, data);
     if (uUser === undefined) {
       throw new NotFoundException('User not found during update');
