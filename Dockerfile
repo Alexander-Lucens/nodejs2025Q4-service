@@ -27,6 +27,8 @@ COPY --from=builder /usr/src/app/prisma ./prisma
 COPY --from=builder /usr/src/app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
 
+COPY --from=builder /usr/src/app/doc ./doc
+
 ENV PORT=4000
 EXPOSE ${PORT}
 
