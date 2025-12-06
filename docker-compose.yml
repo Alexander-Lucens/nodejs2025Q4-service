@@ -1,7 +1,9 @@
 services:
   app:
     container_name: home-library-services
-    build: .
+    build:
+      context: .
+      target: builder
     ports:
       - "${PORT}:${PORT}"
     environment:
@@ -14,11 +16,14 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${POSTGRES_DB}?schema=public
     depends_on:
       - db
-    # restart: always
+    restart: always
     networks:
       - home-library-network
     volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
       - ./logs:/usr/src/app/logs
+    command: npm run start:dev
 
   db:
     container_name: postgres-db
