@@ -19,6 +19,10 @@ export class InMemoryUserRepository implements IUserRepository {
     return this.store.get(id);
   }
 
+  async getByLogin(login: string): Promise<User | undefined> {
+    return this.store.get(login);
+  }
+
   async create(dto: CreateUserDto): Promise<User> {
     const newUser: User = {
       id: uuidv4(),

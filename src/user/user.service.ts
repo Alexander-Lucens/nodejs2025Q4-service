@@ -31,6 +31,10 @@ export class UserService {
     return plainToInstance(UserResponse, user);
   }
 
+  async getByLogin(login: string): Promise<User | undefined> {
+    return this.repository.getByLogin(login);
+  }
+
   async create(data: CreateUserDto) {
     const passwordHash = await hashPassword(data.password);
     const user: User = await this.repository.create({
