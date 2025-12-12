@@ -22,7 +22,13 @@ npm install
 ## Running application
 
 ``` sh
-bash docker-compose up -d --build
+npm run docker:build
+```
+
+## Stop and delete image of application
+
+``` sh
+npm run docker:down
 ```
 
 ## To scan vulnarabilities 
