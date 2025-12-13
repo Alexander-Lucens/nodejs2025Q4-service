@@ -4,6 +4,7 @@ import { comparePassword } from 'src/crypto/hashPassword';
 import { CreateUserDto } from 'src/interfaces/user.interface';
 import { UserService } from 'src/user/user.service';
 import { LoginDto } from './dto/login.dto';
+import { RefreshDto } from './dto/refresh.dto';
 
 @Injectable()
 export class AuthService {
@@ -37,5 +38,21 @@ export class AuthService {
       expiresIn: (process.env.TOKEN_REFRESH_EXPIRE_TIME || '24h') as any,
     });
     return { accessToken, refreshToken };
+  }
+
+  async refresh(dto: RefreshDto) {
+    try {
+      const payload = await this.jwtService.verifyAsync(dto.refreshToken, {
+        secret: process.env.JWT_SECRET_REFRESH_KEY,
+      });
+      const user = await this.userService.getByLogin(payload.login);
+      if (!user) {
+        throw new ForbiddenException('User not found');
+      }
+
+      return this.generateTokens(user.id, user.login);
+    } catch (e) {
+      throw new ForbiddenException('Invalid refresh token');
+    }
   }
 }
