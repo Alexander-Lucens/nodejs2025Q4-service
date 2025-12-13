@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { comparePassword } from 'src/crypto/hashPassword';
 import { CreateUserDto } from 'src/interfaces/user.interface';
@@ -41,6 +45,9 @@ export class AuthService {
   }
 
   async refresh(dto: RefreshDto) {
+    if (!dto.refreshToken) {
+      throw new UnauthorizedException('Refresh token is missing');
+    }
     try {
       const payload = await this.jwtService.verifyAsync(dto.refreshToken, {
         secret: process.env.JWT_SECRET_REFRESH_KEY,

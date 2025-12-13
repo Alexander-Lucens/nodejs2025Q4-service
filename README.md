@@ -39,21 +39,18 @@ npm run scan
 ## Testing
 
 -> After application running open new terminal and enter:
-To run all tests without authorization
-``` sh
-npm run test
-```
-To run only one of all test suites
-``` sh
-npm run test -- <path to suite>
-```
-To run all test with authorization
+
+To run all test for authorization
 ``` sh
 npm run test:auth
 ```
 To run only specific test suite with authorization
 ``` sh
 npm run test:auth -- <path to suite>
+```
+To run all test for refresh
+``` sh
+npm run test:refresh
 ```
 
 ### Auto-fix and format
