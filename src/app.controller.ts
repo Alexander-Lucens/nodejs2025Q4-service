@@ -7,6 +7,6 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return 'Nothing';
+    return 'Nothing here, but also not required';
   }
 }

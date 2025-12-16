@@ -6,7 +6,6 @@ import {
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { IUserRepository } from './user.repository.interface';
-import { hashPassword } from 'src/crypto/hashPassword';
 
 @Injectable()
 export class InMemoryUserRepository implements IUserRepository {
@@ -25,7 +24,7 @@ export class InMemoryUserRepository implements IUserRepository {
       id: uuidv4(),
       login: dto.login,
       version: 1,
-      password: await hashPassword(dto.password),
+      password: dto.password,
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -40,7 +39,7 @@ export class InMemoryUserRepository implements IUserRepository {
       id: user.id,
       login: user.login,
       version: user.version + 1,
-      password: await hashPassword(data.newPassword),
+      password: data.newPassword,
       createdAt: user.createdAt,
       updatedAt: Date.now(),
     };

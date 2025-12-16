@@ -1,20 +1,26 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { ArtistController } from './artist.controller';
 import { ArtistService } from './artist.service';
-import { InMemoryArtistRepository } from 'src/db/artist/in-memory.artist.repository';
+// import { InMemoryArtistRepository } from 'src/db/artist/in-memory.artist.repository';
 import { FavsModule } from 'src/favs/favs.module';
 import { TrackModule } from 'src/track/track.module';
 import { AlbumModule } from 'src/album/album.module';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaArtistRepository } from 'src/db/artist/prisma.artist.repository';
 
 @Module({
   imports: [
+    PrismaModule,
     forwardRef(() => FavsModule),
     forwardRef(() => TrackModule),
     forwardRef(() => AlbumModule),
   ],
   controllers: [ArtistController],
   providers: [
-    { provide: 'ARTIST_REPOSITORY', useClass: InMemoryArtistRepository },
+    {
+      provide: 'ARTIST_REPOSITORY',
+      useClass: PrismaArtistRepository, // InMemoryArtistRepository
+    },
     ArtistService,
   ],
   exports: ['ARTIST_REPOSITORY'],
